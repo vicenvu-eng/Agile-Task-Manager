@@ -1,0 +1,126 @@
+/*HỆ THỐNG MÀU SẮC*/
+/*Giao diện sáng*/
+:root {
+  --bg: #f4f5f7; /*màu nền tổng thể */
+  --surface: #ffffff; /*màu khối nổi bật */
+  --primary: #0052cc; /*màu chủ đạo */
+  --text: #172b4d; /*màu văn bản */
+  --border: #dfe1e6; /*màu đường viền và phân tách */
+}
+/*Giao diện tối*/
+body.dark-mode {
+  --bg: #121212; /*màu nền tổng thể */
+  --surface: #1e1e1e; /*màu khối nổi bật */
+  --primary: #00ffcc; /*màu chủ đạo */
+  --text: #e0e0e0; /*màu văn bản */
+  --border: #333333; /*màu đường viền và phân tách */
+}
+/* ĐỊNH DẠNG CƠ BẢN */
+body {
+  background-color: var(--surface);
+  color: var(--text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* Hiệu chỉnh chuyển màu mượt mà trong 0.3 giây */
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+/* Thanh đieu hướng */
+nav {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+/* chỉnh sửa nút bấm*/
+button {
+  background-color: var(--primary);
+  color: #ffffff; /*chữ trên nút luôn màu trắng */
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.8; /*hiệu ứng khi hover vào nút */
+}
+/* THANH CÔNG CỤ */
+.toolbar {
+  background-color: var(--surface);
+  padding: 15px 25px;
+  margin: 20px 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between; /*đẩy 2 khối ra 2 bên */
+  align-self: center;
+  flex-wrap: wrap; /*cho phép các phần tử trong toolbar xuống dòng nếu không đủ chỗ */
+  gap: 15px; /*khoảng cách giữa các phần tử trong toolbar */
+  transition: background-color 0.3s ease;
+}
+
+/* Ô nhập liệu*/
+input[type="text"] {
+  padding: 10px 15px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  transition: all 0.2s;
+}
+/* Hiệu ứng khi click chuột vào ô nhập liệu */
+input[type="text"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.2); /* Vòng sáng màu xanh dương */
+}
+/* Gom nhóm các ô thêm công việc lại gần nhau */
+.add-task-box {
+  display: flex;
+  gap: 10px;
+}
+/*Khu vực hiển thị danh sách công việc*/
+.board {
+  display: flex;
+  gap: 20px; /*khoảng cách giữa các cột công việc */
+  padding: 0 25px 25px 25px;
+  align-items: flex-start; /*căn các cột ít việc thì ngắn, nhiều thì dài*/
+}
+
+/*Giao diện cột công việc*/
+.column {
+  flex: 1; /*mỗi cột chiếm 1 phần bằng nhau */
+  background-color: var(--surface);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  min-height: 400px; /*đảm bảo cột có chiều cao tối thiểu */
+  display: flex;
+  flex-direction: column; /*sắp xếp công việc theo chiều dọc */
+  transition: background-color 0.3s ease;
+}
+
+/* Tiêu đề cột công việc */
+.column h2 {
+  margin-top: 0;
+  color: var(--text);
+  font-size: 16px;
+  border-bottom: 2px solid var(--bg);
+  padding-bottom: 10px;
+}
+
+/*Khu vực trống để chứa thẻ công việc và thao tác thả chuột */
+.task-list {
+  flex: 1; /*cho phép task-list chiếm toàn bộ chiều cao còn lại của cột */
+  min-height: 50px; /*đảm bảo task-list có chiều cao tối thiểu để dễ dàng thả công việc vào*/
+  margin-top: 10px;
+}

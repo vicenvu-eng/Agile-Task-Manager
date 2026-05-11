@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agile Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!--Thanh navigation-->
+    <nav>
+      <h1>Agile Task Manager</h1>
+      <!--Toggle dark mode button-->
+      <button onclick="document.body.classList.toggle('dark-mode')">
+        🌓 Bật/Tắt Giao Diện
+      </button>
+    </nav>
+    <!--Nhúng file JavaScript-->
+    <script src="script.js"></script>
+    <!-- Khung tìm kiếm-->
+    <div class="toolbar">
+      <div class="search-box">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔍 Tìm kiếm công việc..."
+        />
+      </div>
+      <div class="add-task-box">
+        <input
+          type="text"
+          id="taskNameInput"
+          placeholder="Tên công việc mới..."
+        />
+        <input
+          type="text"
+          id="assigneeInput"
+          placeholder="Người làm (ví dụ: Vũ)"
+        />
+        <button id="addBtn">+ Thêm</button>
+      </div>
+    </div>
+    <!-- Khu vực hiển thị các cột công việc-->
+    <div class="board">
+      <div class="column" id="todo-col">
+        <h2>📋 To Do</h2>
+        <div class="task-list" id="todo-list"></div>
+      </div>
+      <div class="column" id="doing-col">
+        <h2>⚡ Doing</h2>
+        <div class="task-list" id="doing-list"></div>
+      </div>
+      <div class="column" id="done-col">
+        <h2>✅ Done</h2>
+        <div class="task-list" id="done-list"></div>
+      </div>
+    </div>
+  </body>
+</html>
