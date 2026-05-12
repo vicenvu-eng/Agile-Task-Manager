@@ -124,3 +124,34 @@ input[type="text"]:focus {
   min-height: 50px; /*đảm bảo task-list có chiều cao tối thiểu để dễ dàng thả công việc vào*/
   margin-top: 10px;
 }
+/* THẺ CÔNG VIỆC */
+.task-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: grab; /* hiện bàn tay khi hover vào thẻ công việc */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/*Hiệu ứng khi đg kéo*/
+.task-card.dragging {
+  opacity: 0.5; /*giảm độ mờ khi kéo thẻ công việc*/
+  transform: scale(0.95); /*phóng to thẻ công việc khi kéo*/
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /*tăng bóng đổ khi kéo*/
+  border: 2px dashed var(--primary); /*thay đổi đường viền khi kéo*/
+}
+
+.task-card p {
+  margin: 0 0 10px 0;
+  font-weight: 500;
+}
+
+.task-card small {
+  color: #626f86;
+  font-size: 12px;
+}

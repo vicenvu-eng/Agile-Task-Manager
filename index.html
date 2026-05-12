@@ -15,8 +15,6 @@
         🌓 Bật/Tắt Giao Diện
       </button>
     </nav>
-    <!--Nhúng file JavaScript-->
-    <script src="script.js"></script>
     <!-- Khung tìm kiếm-->
     <div class="toolbar">
       <div class="search-box">
@@ -44,10 +42,15 @@
     <div class="board">
       <div class="column" id="todo-col">
         <h2>📋 To Do</h2>
-        <div class="task-list" id="todo-list"></div>
+        <div class="task-list" id="todo-list">
+          <div class="task-card" draggable="true" id="task-1">
+            <p>Học thuộc tính Dranggble</p>
+            <small>Người làm: Vũ </small>
+          </div>
+        </div>
       </div>
       <div class="column" id="doing-col">
-        <h2>⚡ Doing</h2>
+        <h2>⚡Doing</h2>
         <div class="task-list" id="doing-list"></div>
       </div>
       <div class="column" id="done-col">
@@ -55,5 +58,7 @@
         <div class="task-list" id="done-list"></div>
       </div>
     </div>
+    <!--Nhúng file JavaScript-->
+    <script src="script.js"></script>
   </body>
 </html>
