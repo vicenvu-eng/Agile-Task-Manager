@@ -1,4 +1,4 @@
-/*HỆ THỐNG MÀU SẮC*/
+/*----HỆ THỐNG MÀU SẮC*---/
 /*Giao diện sáng*/
 :root {
   --bg: #f4f5f7; /*màu nền tổng thể */
@@ -15,7 +15,8 @@ body.dark-mode {
   --text: #e0e0e0; /*màu văn bản */
   --border: #333333; /*màu đường viền và phân tách */
 }
-/* ĐỊNH DẠNG CƠ BẢN */
+
+/* ----ĐỊNH DẠNG CƠ BẢN---- */
 body {
   background-color: var(--surface);
   color: var(--text);
@@ -53,7 +54,7 @@ button {
 button:hover {
   opacity: 0.8; /*hiệu ứng khi hover vào nút */
 }
-/* THANH CÔNG CỤ */
+/*----- THANH CÔNG CỤ -----*/
 .toolbar {
   background-color: var(--surface);
   padding: 15px 25px;
@@ -66,6 +67,7 @@ button:hover {
   flex-wrap: wrap; /*cho phép các phần tử trong toolbar xuống dòng nếu không đủ chỗ */
   gap: 15px; /*khoảng cách giữa các phần tử trong toolbar */
   transition: background-color 0.3s ease;
+  align-items: center; /*căn giữa các phần tử theo chiều dọc */
 }
 
 /* Ô nhập liệu*/
@@ -124,7 +126,7 @@ input[type="text"]:focus {
   min-height: 50px; /*đảm bảo task-list có chiều cao tối thiểu để dễ dàng thả công việc vào*/
   margin-top: 10px;
 }
-/* THẺ CÔNG VIỆC */
+/*----- THẺ CÔNG VIỆC -----*/
 .task-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -154,4 +156,27 @@ input[type="text"]:focus {
 .task-card small {
   color: #626f86;
   font-size: 12px;
+}
+/* Hiển thị chữ khi cột trốn */
+.task-list:not(:has(.task-card))::after {
+  color: #aaa;
+  font-size: 13px;
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* 2. Đặt câu nói riêng cho cột TO DO */
+#todo-list:not(:has(.task-card))::after {
+  content: "Tuyệt vời, không còn việc nào tồn đọng! ☕";
+}
+
+/* 3. Đặt câu nói riêng cho cột DOING */
+#doing-list:not(:has(.task-card))::after {
+  content: "Chưa có việc nào đang chạy 🚀";
+}
+
+/* 4. Đặt câu nói riêng cho cột DONE */
+#done-list:not(:has(.task-card))::after {
+  content: "CHưa có công việc nào hoan thành 😢";
 }
