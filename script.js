@@ -7,14 +7,10 @@ const lists = document.querySelectorAll(".task-list");
 const searchInput = document.getElementById("searchInput");
 const darkModeBtn = document.getElementById("darkModeBtn");
 
-// --- 2. DARK MODE VỚI LOCAL STORAGE ---
-// Kiểm tra khi vừa load trang
+// --- 2. DARK MODE ---
 if (localStorage.getItem("darkMode") === "true") {
   document.body.classList.add("dark-mode");
-  // Áp dụng dark mode nếu đã lưu trạng thái trước đó
 }
-
-// Xử lý khi bấm nút toggle
 darkModeBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
   localStorage.setItem(
@@ -23,60 +19,41 @@ darkModeBtn.addEventListener("click", () => {
   );
 });
 
-// --- 3. TÌM KIẾM CÔNG VIỆC  ---
+// --- 3. TÌM KIẾM CÔNG VIỆC ---
 searchInput.addEventListener("input", () => {
   const keyword = searchInput.value.trim().toLowerCase();
   document.querySelectorAll(".task-card").forEach((card) => {
-    // Chỉ lấy text nội dung, bỏ qua nút X
     const text = card.textContent.toLowerCase();
     card.style.display = text.includes(keyword) ? "block" : "none";
   });
 });
 
-// --- 4. HÀM DÙNG CHUNG: Gắn sự kiện Xóa và Kéo thả ---
+// --- 4. HÀM GẮN SỰ KIỆN (XÓA & KÉO THẢ) ---
 function ganSuKien(card) {
-  // A. Xóa có xác nhận
   const deleteBtn = card.querySelector(".delete-btn");
   if (deleteBtn) {
     deleteBtn.onclick = (e) => {
       e.stopPropagation();
       if (confirm("Bạn có chắc muốn xóa công việc này?")) {
         card.remove();
+        saveBoard(); // Ghi chép lại sau khi xóa
       }
     };
   }
 
-  // B. Bắt đầu kéo
-  card.addEventListener("dragstart", () => {
-    card.classList.add("dragging");
-  });
-
-  // C. Kết thúc kéo
+  card.addEventListener("dragstart", () => card.classList.add("dragging"));
   card.addEventListener("dragend", () => {
     card.classList.remove("dragging");
+    saveBoard(); // Ghi chép lại vị trí mới
   });
 }
 
-// --- 5. ÁP DỤNG CHO CÁC THẺ CŨ ---
-const existingTasks = document.querySelectorAll(".task-card");
-existingTasks.forEach((task) => {
-  ganSuKien(task);
-});
-
-// --- 6. XỬ LÝ NÚT THÊM - CHỐNG LỖI XSS ---
-addBtn.addEventListener("click", () => {
-  const taskName = taskNameInput.value.trim();
-  const assignee = assigneeInput.value.trim();
-
-  if (taskName === "") {
-    alert("Vui lòng nhập tên công việc!");
-    return;
-  }
-
-  // Thay vì innerHTML, dùng createElement để chống mã độc
-  const newTaskCard = document.createElement("div");
-  newTaskCard.classList.add("task-card");
-  newTaskCard.setAttribute("draggable", "true");
+// --- 5. XƯỞNG ĐÚC THẺ (Tách hàm theo chuẩn DRY) ---
+// Thay vì viết lặp lại, ta tạo một "xưởng" chuyên nặn thẻ
+function createTaskCard(taskName, assignee) {
+  const card = document.createElement("div");
+  card.classList.add("task-card");
+  card.setAttribute("draggable", "true");
 
   const deleteSpan = document.createElement("span");
   deleteSpan.classList.add("delete-btn");
@@ -90,28 +67,40 @@ addBtn.addEventListener("click", () => {
   const smallTag = document.createElement("small");
   smallTag.textContent = `Người làm: ${assignee}`;
 
-  // Lắp ráp các bộ phận vào thẻ
-  newTaskCard.appendChild(deleteSpan);
-  newTaskCard.appendChild(pTag);
-  newTaskCard.appendChild(smallTag);
+  card.appendChild(deleteSpan);
+  card.appendChild(pTag);
+  card.appendChild(smallTag);
+  card.dataset.name = taskName;
+  card.dataset.assignee = assignee;
 
-  // Gắn sự kiện và thả vào bảng
-  ganSuKien(newTaskCard);
+  ganSuKien(card); // Đưa đi huấn luyện luôn
+  return card; // Trả về cái thẻ hoàn chỉnh
+}
+
+// --- 6. XỬ LÝ NÚT THÊM VIỆC ---
+addBtn.addEventListener("click", () => {
+  const taskName = taskNameInput.value.trim();
+  const assignee = assigneeInput.value.trim();
+
+  if (taskName === "") {
+    alert("Vui lòng nhập tên công việc!");
+    return;
+  }
+
+  // Chuyển đơn đặt hàng cho Xưởng đúc thẻ (Phần 5)
+  const newTaskCard = createTaskCard(taskName, assignee);
+
   todoList.appendChild(newTaskCard);
-
-  // Dọn dẹp
   taskNameInput.value = "";
   assigneeInput.value = "";
+  saveBoard(); // Ghi chép lại việc mới
 });
 
-// --- 7. KÉO THẢ THÔNG MINH - CHÈN VÀO GIỮA  ---
-// Hàm phụ trợ: Tính toán vị trí thả dựa vào tọa độ chuột (Y)
+// --- 7. KÉO THẢ THÔNG MINH ---
 function getDragAfterElement(list, y) {
-  // Lấy tất cả thẻ đang nằm yên trong cột (không phải thẻ đang bị kéo)
   const draggableElements = [
     ...list.querySelectorAll(".task-card:not(.dragging)"),
   ];
-
   return draggableElements.reduce(
     (closest, child) => {
       const box = child.getBoundingClientRect();
@@ -130,40 +119,57 @@ lists.forEach((list) => {
   list.addEventListener("dragover", (e) => {
     e.preventDefault();
     const draggingTask = document.querySelector(".dragging");
-
     if (draggingTask) {
       const afterElement = getDragAfterElement(list, e.clientY);
-      // Nếu không tìm thấy vị trí chèn giữa -> thả vào cuối cột
       if (afterElement == null) {
         list.appendChild(draggingTask);
       } else {
-        // Nếu tìm thấy vị trí -> chèn nó lên phía trên thẻ đó
         list.insertBefore(draggingTask, afterElement);
       }
     }
   });
 });
 
-// --- 8. LƯU DỮ LIỆU VÀO TRÌNH DUYỆT (LOCAL STORAGE) ---
+// --- 8. LƯU DỮ LIỆU ---
 function saveBoard() {
-  const allTasks = []; // Tạo 1 cái balo rỗng để chứa dữ liệu
-
-  // Đi kiển tra từng thẻ công việc trên bảng
+  const allTasks = [];
   document.querySelectorAll(".task-card").forEach((card) => {
     const taskName = card.querySelector("p").textContent;
     const assignee = card
       .querySelector("small")
       .textContent.replace("Người làm: ", "");
-    const columnID = card.parentElement.id; // Lấy id của cột hiện tại
+    const columnID = card.parentElement.id;
 
-    // Đẩy dữ liệu vào balo
-    allTasks.push({
-      name: taskName,
-      assignee: assignee,
-      column: columnID,
-    });
+    allTasks.push({ name: taskName, assignee: assignee, column: columnID });
   });
-
-  // Khóa balo cất vào Local Storage
   localStorage.setItem("taskBoard", JSON.stringify(allTasks));
 }
+
+// --- 9. KHÔI PHỤC DỮ LIỆU ---
+function loadBoard() {
+  const savedData = localStorage.getItem("taskBoard");
+
+  // XỬ LÝ NGOẠI LỆ: Nếu là người dùng mới tinh (két sắt trống)
+  if (!savedData) {
+    // Tìm cái thẻ viết sẵn trong HTML, dạy nó kéo thả, rồi lưu nó làm vốn liếng ban đầu!
+    document.querySelectorAll(".task-card").forEach((card) => ganSuKien(card));
+    saveBoard();
+    return; // Dừng tại đây
+  }
+
+  // Nếu đã có dữ liệu cũ
+  const allTasks = JSON.parse(savedData);
+  document.querySelectorAll(".task-card").forEach((card) => card.remove()); // Dọn dẹp
+
+  allTasks.forEach((task) => {
+    // Lại nhờ Xưởng đúc thẻ (Phần 5) làm việc
+    const newTaskCard = createTaskCard(task.name, task.assignee);
+    const column = document.getElementById(task.column);
+    if (column) {
+      column.appendChild(newTaskCard);
+    }
+  });
+}
+
+// Khởi động
+loadBoard();
